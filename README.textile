@@ -1,0 +1,50 @@
+h1. Strongbox
+
+Public Key Encryption for ActiveRecord.
+
+h2. Gem installation (Rails 2.1+)
+
+In config/environment.rb:
+
+    config.gem "spikex-strongbox", 
+      :lib     => 'strongbox', 
+      :source  => 'http://gems.github.com', 
+
+h2. Key Generation
+
+Generate a key pair:
+
+openssl genrsa -des3 -out private.pem 2048
+Generating RSA private key, 2048 bit long modulus
+......+++
+.+++
+e is 65537 (0x10001)
+Enter pass phrase for private.pem:
+Verifying - Enter pass phrase for private.pem:
+
+and extract the the public key:
+
+openssl rsa -in private.pem -out public.pem -outform PEM -pubout
+Enter pass phrase for private.pem:
+writing RSA key
+
+h2. Configuration
+
+Strongbox.configure do |config|
+
+  config.key_pair = '/PATH/TO/KEY_PAIR.pem'
+  # Or:
+  # config.public_key = '/PATH/TO/PUBLIC/KEY.pem'
+  # config.private_key = '/PATH/TO/PRIVATE/KEY.pem'
+  
+  # Optionally
+  
+  # config.base64 = true  # Base64 Encode encrypted data
+  # config.padding = RSA_PKCS1_OAEP_PADDING # Default is RSA_PKCS1_PADDING
+  # config.symmetric_cipher = 'blowfish-cbc' # Default is aes-256-cbc
+  
+end
+
+h2. Authors
+
+Spike Ilacuqa
