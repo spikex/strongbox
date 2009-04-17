@@ -79,7 +79,7 @@ class StrongboxTest < Test::Unit::TestCase
          should 'Base64 encode the ciphertext' do
            # Base64 encoded text is limited to the charaters A–Z, a–z, and 0–9,
            # and is padded with 0 to 2 equal-signs
-           assert @dummy.attributes['secret'] =~ /^[0-9A-Za-z+\/]+={0,2}$/
+           assert_match /^[0-9A-Za-z+\/]+={0,2}$/, @dummy.attributes['secret']
          end
        end
      end
