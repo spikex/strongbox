@@ -31,17 +31,13 @@ spec = Gem::Specification.new do |s|
   s.authors = ["Spike Ilacqua"]
   s.email = "spike@stuff-things.net"
   s.homepage = "http://stuff-things.net/strongbox"
-  s.files = FileList["README*",
-                     "LICENSE",
-                     "Rakefile",
-                     "init.rb",
-                     "{lib,rails,test}/**/*"].to_a
+  s.files = FileList["[A-Z]*", "{lib,rails,test}/**/*"]
   s.add_development_dependency 'thoughtbot-shoulda'
 end
 
 desc "Generate a gemspec file for GitHub"
 task :gemspec do
   File.open("#{spec.name}.gemspec", 'w') do |f|
-    f.write spec.to_ruby
+    f.write spec.to_yaml
   end
 end
