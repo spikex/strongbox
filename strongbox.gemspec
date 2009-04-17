@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: strongbox
 version: !ruby/object:Gem::Version 
-  version: 0.1.2
+  version: 0.1.3
 platform: ruby
 authors: 
 - Spike Ilacqua
