@@ -31,7 +31,7 @@ spec = Gem::Specification.new do |s|
   s.authors = ["Spike Ilacqua"]
   s.email = "spike@stuff-things.net"
   s.homepage = "http://stuff-things.net/strongbox"
-  s.files = FileList["[A-Z]*", "init.rb", "{lib,rails,test}/**/*"]
+  s.files = FileList["[A-Z]*", "init.rb", "{lib,rails}/**/*"]
   s.add_development_dependency 'thoughtbot-shoulda'
 end
 
