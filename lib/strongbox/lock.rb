@@ -56,7 +56,7 @@ module Strongbox
       return "*encrypted*" if password.blank?
 
       unless @private_key
-        raise StrongboxError.new("#{@instance.class} model does not have public key_file")
+        raise StrongboxError.new("#{@instance.class} model does not have private key_file")
       end
       
       ciphertext = @instance.read_attribute(@name)
