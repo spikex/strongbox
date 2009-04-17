@@ -109,8 +109,8 @@ For example, encrypting a small attribute, providing only the public key for ext
 security, and Base64 encoding the encrypted data:
 
 class User < ActiveRecord::Base
-  validates_length_of :pin_code, 
-  encrypt_with_public_key :pin_code, :is => 4
+  validates_length_of :pin_code, :is => 4
+  encrypt_with_public_key :pin_code, 
     :symmetric => :never
     :base64 => true
     :public_key => File.join(RAILS_ROOT,'config','public.pem'),
