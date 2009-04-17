@@ -83,6 +83,21 @@ class StrongboxTest < Test::Unit::TestCase
          end
        end
      end
+     
+     context "using blowfish cipher instead of AES" do
+       setup do
+         rebuild_class(:key_pair => File.join(FIXTURES_DIR,'keypair.pem'),
+                       :symmetric_cipher => 'bf-cbc')
+         @dummy = Dummy.new
+         @dummy.secret = 'Shhhh'
+       end
+       
+       should "encrypt the data"  do
+         assert_not_equal @dummy.attributes['secret'], 'Shhhh'
+         assert_equal "*encrypted*", @dummy.secret.decrypt
+         assert_equal "Shhhh", @dummy.secret.decrypt('boost facile')
+       end
+     end
   end
    
   context "when a key_pair is not provided" do

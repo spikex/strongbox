@@ -64,7 +64,7 @@ module Strongbox
         ciphertext = Base64.decode64(ciphertext) if @base64
         private_key = OpenSSL::PKey::RSA.new(File.read(@private_key),password)
         if @symmetric == :always        
-          cipher = OpenSSL::Cipher::Cipher.new('aes-256-cbc')
+          cipher = OpenSSL::Cipher::Cipher.new(@symmetric_cipher)
           cipher.decrypt
           cipher.key = private_key.private_decrypt(@instance.read_attribute(@symmetric_key),@padding)
           cipher.iv = private_key.private_decrypt(@instance.read_attribute(@symmetric_iv),@padding)
