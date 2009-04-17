@@ -80,6 +80,14 @@ class StrongboxTest < Test::Unit::TestCase
            # Base64 encoded text is limited to the charaters A–Z, a–z, and 0–9,
            # and is padded with 0 to 2 equal-signs
            assert_match /^[0-9A-Za-z+\/]+={0,2}$/, @dummy.attributes['secret']
+           assert_match /^[0-9A-Za-z+\/]+={0,2}$/, @dummy.attributes['secret_key']
+           assert_match /^[0-9A-Za-z+\/]+={0,2}$/, @dummy.attributes['secret_iv']
+         end
+         
+         should "encrypt the data"  do
+           assert_not_equal @dummy.attributes['secret'], 'Shhhh'
+           assert_equal "*encrypted*", @dummy.secret.decrypt
+           assert_equal "Shhhh", @dummy.secret.decrypt('boost facile')
          end
        end
      end

@@ -36,9 +36,14 @@ module Strongbox
 
           ciphertext = cipher.update(plaintext)
           ciphertext << cipher.final
-
-          @instance.write_attribute(@symmetric_key,public_key.public_encrypt(random_key,@padding))
-          @instance.write_attribute(@symmetric_iv,public_key.public_encrypt(random_iv,@padding))
+          encrypted_key = public_key.public_encrypt(random_key,@padding)
+          encrypted_iv = public_key.public_encrypt(random_iv,@padding)
+          if @base64
+            encrypted_key = Base64.encode64(encrypted_key)
+            encrypted_iv = Base64.encode64(encrypted_iv)
+          end
+          @instance.write_attribute(@symmetric_key,encrypted_key)
+          @instance.write_attribute(@symmetric_iv,encrypted_iv)
         else
           ciphertext = public_key.public_encrypt(plaintext,@padding)
         end
@@ -63,11 +68,17 @@ module Strongbox
       if ciphertext
         ciphertext = Base64.decode64(ciphertext) if @base64
         private_key = OpenSSL::PKey::RSA.new(File.read(@private_key),password)
-        if @symmetric == :always        
+        if @symmetric == :always
+          random_key = @instance.read_attribute(@symmetric_key)
+          random_iv = @instance.read_attribute(@symmetric_iv)
+          if @base64
+            random_key = Base64.decode64(random_key)
+            random_iv = Base64.decode64(random_iv)
+          end
           cipher = OpenSSL::Cipher::Cipher.new(@symmetric_cipher)
           cipher.decrypt
-          cipher.key = private_key.private_decrypt(@instance.read_attribute(@symmetric_key),@padding)
-          cipher.iv = private_key.private_decrypt(@instance.read_attribute(@symmetric_iv),@padding)
+          cipher.key = private_key.private_decrypt(random_key,@padding)
+          cipher.iv = private_key.private_decrypt(random_iv,@padding)
           plaintext = cipher.update(ciphertext)
           plaintext << cipher.final
         else
