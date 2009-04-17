@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: strongbox
 version: !ruby/object:Gem::Version 
-  version: 0.1.1
+  version: 0.1.2
 platform: ruby
 authors: 
 - Spike Ilacqua
@@ -34,6 +34,7 @@ files:
 - LICENSE
 - Rakefile
 - README.textile
+- init.rb
 - lib/strongbox
 - lib/strongbox/lock.rb
 - lib/strongbox.rb
