@@ -8,6 +8,8 @@ module Strongbox
       @name              = name
       @instance          = instance
       
+      @size = nil
+      
       options = Strongbox.options.merge(options)
       
       @base64 = options[:base64]
@@ -25,6 +27,7 @@ module Strongbox
         raise StrongboxError.new("#{@instance.class} model does not have public key_file")
       end
       if !plaintext.blank?
+        @size = plaintext.size # For validations
         # Using a blank password in OpenSSL::PKey::RSA.new prevents reading
         # the private key if the file is a key pair
         public_key = OpenSSL::PKey::RSA.new(File.read(@public_key),"")
@@ -58,13 +61,16 @@ module Strongbox
     def decrypt password = ""
       # Given a private key and a nil password OpenSSL::PKey::RSA.new() will
       # *prompt* for a password, we default to an empty string to avoid that.
+      ciphertext = @instance.read_attribute(@name)
+      return nil if ciphertext.nil?
+      return "" if ciphertext.empty?
+      
       return "*encrypted*" if password.blank?
 
       unless @private_key
         raise StrongboxError.new("#{@instance.class} model does not have private key_file")
       end
       
-      ciphertext = @instance.read_attribute(@name)
       if ciphertext
         ciphertext = Base64.decode64(ciphertext) if @base64
         private_key = OpenSSL::PKey::RSA.new(File.read(@private_key),password)
@@ -91,6 +97,19 @@ module Strongbox
     
     def to_s
       decrypt
+    end
+    
+    # Needed for validations
+    def blank?
+      @instance.read_attribute(@name).blank?
+    end
+    
+    def nil?
+      @instance.read_attribute(@name).nil?
+    end
+    
+    def size
+      @size
     end
   end
 end
