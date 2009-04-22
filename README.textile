@@ -95,8 +95,7 @@ Options to encrypt_with_public_key are:
 :symmetric :always/:never - Encrypt the date using symmetric encryption. The public
 key is used to encrypt an automatically generated key and IV. This allows for large
 amounts of data to be encrypted. The size of data that can be encrypted directly with
-the public is limit to key size (in bytes) - 11. So a 2048 key can encrypt *245
-bytes*. Defaults to *:always*
+the public is limit to key size (in bytes) - 11. So a 2048 key can encrypt *245 bytes*. Defaults to :always
 
 :symmetric_cipher - Cipher to use for symmetric encryption.  Defaults to *'aes-256-cbc'*.  Other ciphers support by OpenSSL may be used.
 
