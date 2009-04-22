@@ -17,11 +17,11 @@ database, just as the unencrypted attribute would be. If symmetric encryption is
 
 The attribute is automatically encrypted simply by setting it:
 
-user.secret = "Shhhhhhh..."
+  user.secret = "Shhhhhhh..."
 
 and decrypted by calling the "decrypt" method with the private key password.
 
-plain_text = user.secret.decrypt 'letmein'
+  plain_text = user.secret.decrypt 'letmein'
 
 h2. Quick Start
 
@@ -33,22 +33,24 @@ In your model:
   end
   
 In your migrations:
+
   class AddSecretColumnsToUser < ActiveRecord::Migration
     def self.up
       add_column :users, :secret, binary
       add_column :users, :secret_key, binary
       add_column :users, :secret_iv, binary
     end
-    
     def self.down
       remove_column :users, :secret
       remove_column :users, :secret_key
       remove_column :users, :secret_iv
+    end  
   end
   
 Generate a key pair:
 
-  (Choose a strong password.)
+(Choose a strong password.)
+
   openssl genrsa -des3 -out config/private.pem 2048
   openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
   cat config/private.pem  config/public.pem >> config/keypair.pem
@@ -71,11 +73,11 @@ h2. Usage
 _encrypt_with_public_key_ sets up the attribute it's called on for automatic
 encryption.  It's simplest form is:
 
-class User < ActiveRecord::Base
-  encrypt_with_public_key :secret,
-    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
+  class User < ActiveRecord::Base
+    encrypt_with_public_key :secret,
+      :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
+    end
   end
-end
 
 Which will encrypt the attribute "secret". The attribute will be encrypted using
 symmetric encryption with an automatically generated key and IV encrypted using the
@@ -102,43 +104,43 @@ bytes*. Defaults to *:always*
 binary save data storage is not available.  Defaults to *false*
 
 :padding - Method used to pad data encrypted with the public key. Defaults to
-RSA_PKCS1_PADDING. The default should be find unless you are dealing with legacy
+RSA_PKCS1_PADDING. The default should be fine unless you are dealing with legacy
 data.
 
 For example, encrypting a small attribute, providing only the public key for extra
 security, and Base64 encoding the encrypted data:
 
-class User < ActiveRecord::Base
-  validates_length_of :pin_code, :is => 4
-  encrypt_with_public_key :pin_code, 
-    :symmetric => :never
-    :base64 => true
-    :public_key => File.join(RAILS_ROOT,'config','public.pem'),
+  class User < ActiveRecord::Base
+    validates_length_of :pin_code, :is => 4
+    encrypt_with_public_key :pin_code, 
+      :symmetric => :never
+      :base64 => true
+      :public_key => File.join(RAILS_ROOT,'config','public.pem'),
+    end
   end
-end
 
 h2. Key Generation
 
 Generate a key pair:
 
-openssl genrsa -des3 -out config/private.pem 2048
-Generating RSA private key, 2048 bit long modulus
-......+++
-.+++
-e is 65537 (0x10001)
-Enter pass phrase for config/private.pem:
-Verifying - Enter pass phrase for config/private.pem:
+  openssl genrsa -des3 -out config/private.pem 2048
+  Generating RSA private key, 2048 bit long modulus
+  ......+++
+  .+++
+  e is 65537 (0x10001)
+  Enter pass phrase for config/private.pem:
+  Verifying - Enter pass phrase for config/private.pem:
 
 and extract the the public key:
 
-openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
-Enter pass phrase for config/private.pem:
-writing RSA key
+  openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
+  Enter pass phrase for config/private.pem:
+  writing RSA key
 
 If you are going to leave the private key installed it's easiest to create a single
 key pair file:
 
-cat config/private.pem  config/public.pem >> config/keypair.pem
+  cat config/private.pem  config/public.pem >> config/keypair.pem
 
 Or, for added security, store the private key file else where, leaving only the public key.
 
