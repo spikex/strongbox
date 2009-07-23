@@ -43,23 +43,29 @@ module Strongbox
     # and IV.
     def encrypt_with_public_key(name, options = {})
       include InstanceMethods
-      
-      options = options.symbolize_keys.reverse_merge Strongbox.options
+
+      class_inheritable_reader :lock_options
+      write_inheritable_attribute(:lock_options, {}) if lock_options.nil?
+
+
+      lock_options[name] = options.symbolize_keys.reverse_merge Strongbox.options
           
       define_method name do
-        @_lock ||= Lock.new(name, self, options)
+        lock_for(name)
       end
       
       define_method "#{name}=" do | plaintext |
-        @_lock ||= Lock.new(name, self, options)
-        @_lock.encrypt plaintext
+        lock_for(name).encrypt plaintext
       end
       
     end
   end
   
   module InstanceMethods
-    
+    def lock_for name
+      @_locks ||= {}
+      @_locks[name] ||= Lock.new(name, self, self.class.lock_options[name])
+    end
   end
 end
 

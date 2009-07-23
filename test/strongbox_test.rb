@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'test/test_helper'
 
 class StrongboxTest < Test::Unit::TestCase
@@ -216,5 +217,35 @@ class StrongboxTest < Test::Unit::TestCase
       end
     end
   end
+
+  context "A Class with two secured fields" do
+    setup do
+      key_pair = File.join(FIXTURES_DIR,'keypair.pem')
+      Dummy.class_eval do
+        encrypt_with_public_key :secret, :key_pair => key_pair
+        encrypt_with_public_key :segreto, :key_pair => key_pair
+      end
+    end
+
+    context "that is valid" do
+      setup do
+        @dummy = Dummy.new
+        @dummy.secret = 'I have a secret...'
+        @dummy.segreto = 'Ho un segreto...'
+      end
+       
+      should "return '*encrypted*' when the record is locked"  do
+        assert_equal "*encrypted*", @dummy.secret.decrypt
+        assert_equal "*encrypted*", @dummy.segreto.decrypt
+      end
+
+       should "return the secrets when unlocked"  do
+         assert_equal "I have a secret...", @dummy.secret.decrypt('boost facile')
+         assert_equal "Ho un segreto...", @dummy.segreto.decrypt('boost facile')
+       end
+
+    end
+  end
+
 end
 
