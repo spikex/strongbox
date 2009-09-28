@@ -34,50 +34,50 @@ end
   
 In your migrations:
 
-  class AddSecretColumnsToUser < ActiveRecord::Migration
-    def self.up
-      add_column :users, :secret, binary
-      add_column :users, :secret_key, binary
-      add_column :users, :secret_iv, binary
-    end
-    def self.down
-      remove_column :users, :secret
-      remove_column :users, :secret_key
-      remove_column :users, :secret_iv
-    end  
+bc. class AddSecretColumnsToUser < ActiveRecord::Migration
+  def self.up
+    add_column :users, :secret, :binary
+    add_column :users, :secret_key, :binary
+    add_column :users, :secret_iv, :binary
   end
+  def self.down
+    remove_column :users, :secret
+    remove_column :users, :secret_key
+    remove_column :users, :secret_iv
+  end  
+end
   
 Generate a key pair:
 
 (Choose a strong password.)
 
-  openssl genrsa -des3 -out config/private.pem 2048
-  openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
-  cat config/private.pem  config/public.pem >> config/keypair.pem
+bc. openssl genrsa -des3 -out config/private.pem 2048
+openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
+cat config/private.pem  config/public.pem >> config/keypair.pem
 
 In your views and forms you don't need to do anything special to encrypt data. To
 decrypt call:
 
-  user.secret.decrypt 'password'
+bc. user.secret.decrypt 'password'
 
 h2. Gem installation (Rails 2.1+)
 
 In config/environment.rb:
 
-    config.gem "spikex-strongbox", 
-      :lib     => 'strongbox', 
-      :source  => 'http://gems.github.com', 
+bc. config.gem "spikex-strongbox", 
+  :lib     => 'strongbox', 
+  :source  => 'http://gems.github.com', 
 
 h2. Usage
 
 _encrypt_with_public_key_ sets up the attribute it's called on for automatic
 encryption.  It's simplest form is:
 
-  class User < ActiveRecord::Base
-    encrypt_with_public_key :secret,
-      :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
-    end
+bc. class User < ActiveRecord::Base
+  encrypt_with_public_key :secret,
+    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
   end
+end
 
 Which will encrypt the attribute "secret". The attribute will be encrypted using
 symmetric encryption with an automatically generated key and IV encrypted using the
@@ -109,37 +109,37 @@ data.
 For example, encrypting a small attribute, providing only the public key for extra
 security, and Base64 encoding the encrypted data:
 
-  class User < ActiveRecord::Base
-    validates_length_of :pin_code, :is => 4
-    encrypt_with_public_key :pin_code, 
-      :symmetric => :never
-      :base64 => true
-      :public_key => File.join(RAILS_ROOT,'config','public.pem'),
-    end
+bc. class User < ActiveRecord::Base
+  validates_length_of :pin_code, :is => 4
+  encrypt_with_public_key :pin_code, 
+    :symmetric => :never,
+    :base64 => true,
+    :public_key => File.join(RAILS_ROOT,'config','public.pem')
   end
+end
 
 h2. Key Generation
 
 Generate a key pair:
 
-  openssl genrsa -des3 -out config/private.pem 2048
-  Generating RSA private key, 2048 bit long modulus
-  ......+++
-  .+++
-  e is 65537 (0x10001)
-  Enter pass phrase for config/private.pem:
-  Verifying - Enter pass phrase for config/private.pem:
+bc. openssl genrsa -des3 -out config/private.pem 2048
+Generating RSA private key, 2048 bit long modulus
+......+++
+.+++
+e is 65537 (0x10001)
+Enter pass phrase for config/private.pem:
+Verifying - Enter pass phrase for config/private.pem:
 
 and extract the the public key:
 
-  openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
-  Enter pass phrase for config/private.pem:
-  writing RSA key
+bc. openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
+Enter pass phrase for config/private.pem:
+writing RSA key
 
 If you are going to leave the private key installed it's easiest to create a single
 key pair file:
 
-  cat config/private.pem  config/public.pem >> config/keypair.pem
+bc. cat config/private.pem  config/public.pem >> config/keypair.pem
 
 Or, for added security, store the private key file else where, leaving only the public key.
 
