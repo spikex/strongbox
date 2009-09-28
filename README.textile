@@ -27,10 +27,10 @@ h2. Quick Start
 
 In your model:
 
-  class User < ActiveRecord::Base
-    encrypt_with_public_key :secret,
-      :key_pair => File.join(RAILS_ROOT,'config','keypair.pem'),
-  end
+bc. class User < ActiveRecord::Base
+  encrypt_with_public_key :secret,
+    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem'),
+end
   
 In your migrations:
 
