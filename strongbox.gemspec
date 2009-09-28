@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: strongbox
 version: !ruby/object:Gem::Version 
-  version: 0.1.5
+  version: 0.2.0
 platform: ruby
 authors: 
 - Spike Ilacqua
@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-04-20 00:00:00 -06:00
+date: 2009-09-28 00:00:00 -06:00
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
@@ -39,8 +39,10 @@ files:
 - lib/strongbox/lock.rb
 - lib/strongbox.rb
 - rails/init.rb
-has_rdoc: false
+has_rdoc: true
 homepage: http://stuff-things.net/strongbox
+licenses: []
+
 post_install_message: 
 rdoc_options: []
 
@@ -61,9 +63,9 @@ required_rubygems_version: !ruby/object:Gem::Requirement
 requirements: []
 
 rubyforge_project: 
-rubygems_version: 1.3.1
+rubygems_version: 1.3.4
 signing_key: 
-specification_version: 2
+specification_version: 3
 summary: Secures ActiveRecord fields with public key encryption.
 test_files: []
 
