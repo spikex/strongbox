@@ -66,7 +66,7 @@ In config/environment.rb:
 
 bc. config.gem "spikex-strongbox", 
   :lib     => 'strongbox', 
-  :source  => 'http://gems.github.com', 
+  :source  => 'http://gems.github.com' 
 
 h2. Usage
 
