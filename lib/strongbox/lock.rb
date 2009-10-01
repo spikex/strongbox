@@ -45,13 +45,13 @@ module Strongbox
             encrypted_key = Base64.encode64(encrypted_key)
             encrypted_iv = Base64.encode64(encrypted_iv)
           end
-          @instance.write_attribute(@symmetric_key,encrypted_key)
-          @instance.write_attribute(@symmetric_iv,encrypted_iv)
+          @instance[@symmetric_key] = encrypted_key
+          @instance[@symmetric_iv] = encrypted_iv
         else
           ciphertext = public_key.public_encrypt(plaintext,@padding)
         end
         ciphertext =  Base64.encode64(ciphertext) if @base64
-        @instance.write_attribute(@name,ciphertext)
+        @instance[@name] = ciphertext
       end
     end
     
@@ -61,7 +61,7 @@ module Strongbox
     def decrypt password = ""
       # Given a private key and a nil password OpenSSL::PKey::RSA.new() will
       # *prompt* for a password, we default to an empty string to avoid that.
-      ciphertext = @instance.read_attribute(@name)
+      ciphertext = @instance[@name]
       return nil if ciphertext.nil?
       return "" if ciphertext.empty?
       
@@ -75,8 +75,8 @@ module Strongbox
         ciphertext = Base64.decode64(ciphertext) if @base64
         private_key = OpenSSL::PKey::RSA.new(File.read(@private_key),password)
         if @symmetric == :always
-          random_key = @instance.read_attribute(@symmetric_key)
-          random_iv = @instance.read_attribute(@symmetric_iv)
+          random_key = @instance[@symmetric_key]
+          random_iv = @instance[@symmetric_iv]
           if @base64
             random_key = Base64.decode64(random_key)
             random_iv = Base64.decode64(random_iv)
@@ -101,11 +101,11 @@ module Strongbox
     
     # Needed for validations
     def blank?
-      @instance.read_attribute(@name).blank?
+      @instance[@name].blank?
     end
     
     def nil?
-      @instance.read_attribute(@name).nil?
+      @instance[@name].nil?
     end
     
     def size
