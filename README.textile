@@ -64,9 +64,7 @@ h2. Gem installation (Rails 2.1+)
 
 In config/environment.rb:
 
-bc. config.gem "spikex-strongbox", 
-  :lib     => 'strongbox', 
-  :source  => 'http://gems.github.com' 
+bc. config.gem "strongbox"
 
 h2. Usage
 
