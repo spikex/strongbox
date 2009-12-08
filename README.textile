@@ -74,7 +74,6 @@ encryption.  It's simplest form is:
 bc. class User < ActiveRecord::Base
   encrypt_with_public_key :secret,
     :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
-  end
 end
 
 Which will encrypt the attribute "secret". The attribute will be encrypted using
@@ -113,7 +112,6 @@ bc. class User < ActiveRecord::Base
     :symmetric => :never,
     :base64 => true,
     :public_key => File.join(RAILS_ROOT,'config','public.pem')
-  end
 end
 
 h2. Key Generation
