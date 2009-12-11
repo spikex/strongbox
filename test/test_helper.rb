@@ -4,7 +4,7 @@ $LOAD_PATH << File.join(ROOT, 'lib')
 
 require 'rubygems'
 require 'test/unit'
-require 'activerecord'
+require 'active_record'
 gem 'thoughtbot-shoulda', ">= 2.9.0"
 require 'shoulda'
 begin require 'redgreen'; rescue LoadError; end
