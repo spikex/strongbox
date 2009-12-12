@@ -148,8 +148,8 @@ is needed.
 
 If your underlying database allows, use the *binary* column type. If you must store
 your data in text format be sure to enable Base64 encoding and to use the *text*
-column type. The _string_ column type is likely to be too small to hold the encrypted
-string.
+column type. If you use a _string_ column and encrypt anything greater than 186 bytes (245 bytes if you don't enable Base64 encoding) *your data will be lost*.
+
 
 h2. Security Caveats
 
