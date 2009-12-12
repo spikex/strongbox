@@ -58,15 +58,14 @@ module Strongbox
     # Given the private key password decrypts the attribute.  Will raise
     # OpenSSL::PKey::RSAError if the password is wrong.
     
-    def decrypt password = ""
+    def decrypt password = nil
       # Given a private key and a nil password OpenSSL::PKey::RSA.new() will
       # *prompt* for a password, we default to an empty string to avoid that.
       ciphertext = @instance[@name]
       return nil if ciphertext.nil?
       return "" if ciphertext.empty?
       
-      return "*encrypted*" if password.blank?
-
+      return "*encrypted*" if password.nil?
       unless @private_key
         raise StrongboxError.new("#{@instance.class} model does not have private key_file")
       end
@@ -114,6 +113,7 @@ module Strongbox
 
 private
     def get_rsa_key(key,password = '')
+      return key if key.is_a?(OpenSSL::PKey::RSA)
       if key !~ /^-----BEGIN RSA/
         key = File.read(key)
       end

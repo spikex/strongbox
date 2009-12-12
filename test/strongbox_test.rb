@@ -161,6 +161,30 @@ class StrongboxTest < Test::Unit::TestCase
       assert_equal '*encrypted*', @dummy.secret.decrypt
     end
   end
+
+  context "when an unencrypted public key is used" do
+     setup do
+      rebuild_class(:public_key => generate_key_pair.public_key)
+      @dummy = Dummy.new(:secret => 'Shhhh')
+     end
+
+    should "encrypt the data"  do
+      assert_not_equal @dummy.attributes['secret'], 'Shhhh'
+      assert_equal '*encrypted*', @dummy.secret.decrypt
+    end
+  end
+
+  context "when an unencrypted key pair is used" do
+     setup do
+      rebuild_class(:key_pair => generate_key_pair)
+      @dummy = Dummy.new(:secret => 'Shhhh')
+     end
+
+    should "encrypt the data"  do
+      assert_not_equal @dummy.attributes['secret'], 'Shhhh'
+      assert_equal "Shhhh", @dummy.secret.decrypt('')
+    end
+  end
   
   context 'with validations' do
     context 'using validates_presence_of' do
