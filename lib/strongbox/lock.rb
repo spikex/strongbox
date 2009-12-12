@@ -30,7 +30,7 @@ module Strongbox
         @size = plaintext.size # For validations
         # Using a blank password in OpenSSL::PKey::RSA.new prevents reading
         # the private key if the file is a key pair
-        public_key = OpenSSL::PKey::RSA.new(File.read(@public_key),"")
+        public_key = get_rsa_key(@public_key,"")
         if @symmetric == :always
           cipher = OpenSSL::Cipher::Cipher.new(@symmetric_cipher)
           cipher.encrypt
@@ -73,7 +73,7 @@ module Strongbox
       
       if ciphertext
         ciphertext = Base64.decode64(ciphertext) if @base64
-        private_key = OpenSSL::PKey::RSA.new(File.read(@private_key),password)
+        private_key = get_rsa_key(@private_key,password)
         if @symmetric == :always
           random_key = @instance[@symmetric_key]
           random_iv = @instance[@symmetric_iv]
@@ -110,6 +110,14 @@ module Strongbox
     
     def size
       @size
+    end
+
+private
+    def get_rsa_key(key,password = '')
+      if key !~ /^-----BEGIN RSA/
+        key = File.read(key)
+      end
+      return OpenSSL::PKey::RSA.new(key,password)
     end
   end
 end

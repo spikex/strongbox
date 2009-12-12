@@ -48,3 +48,13 @@ def rebuild_class options = {}
     encrypt_with_public_key :secret, options
   end
 end
+
+def generate_key_pair(password = nil,size = 2048)
+  rsa_key = OpenSSL::PKey::RSA.new(size)
+  # If no password is provided, don't encrypt the key
+  return rsa_key if password.blank?
+  cipher =  OpenSSL::Cipher::Cipher.new('des3')
+  key_pair = rsa_key.to_pem(cipher,password)
+  key_pair << rsa_key.public_key.to_pem
+  return key_pair
+end
