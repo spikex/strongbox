@@ -4,7 +4,9 @@ $LOAD_PATH << File.join(ROOT, 'lib')
 
 require 'rubygems'
 require 'test/unit'
+require 'sqlite3'
 require 'active_record'
+require 'logger'
 gem 'thoughtbot-shoulda', ">= 2.9.0"
 require 'shoulda'
 begin require 'redgreen'; rescue LoadError; end
@@ -47,6 +49,16 @@ def rebuild_class options = {}
     include Strongbox
     encrypt_with_public_key :secret, options
   end
+end
+
+def assert_has_errors_on(model,attribute)
+  # Rails 2.X && Rails 3.X
+  !model.errors[attribute].empty?
+end
+
+def assert_does_not_have_errors_on(model,attribute)
+  # Rails 2.X                     Rails 3.X
+  model.errors[attribute].nil? || model.errors[attribute].empty?
 end
 
 def generate_key_pair(password = nil,size = 2048)

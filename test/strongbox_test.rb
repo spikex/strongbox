@@ -197,12 +197,12 @@ class StrongboxTest < Test::Unit::TestCase
       
       should 'not have an error on the secret when valid' do
         assert @valid.valid?
-        assert_nil @valid.errors.on(:secret)
+        assert_does_not_have_errors_on(@valid,:secret)
       end
       
       should 'have an error on the secret when invalid' do
         assert !@invalid.valid?
-        assert @invalid.errors.on(:secret)
+        assert_has_errors_on(@invalid,:secret)
       end
     end
     
@@ -223,22 +223,22 @@ class StrongboxTest < Test::Unit::TestCase
       
       should 'not have an error on the secret when in range' do
         assert @valid.valid?
-        assert_nil @valid.errors.on(:secret)
+        assert_does_not_have_errors_on(@valid,:secret)
       end
       
       should 'not have an error on the secret when nil' do
         assert @valid_nil.valid?
-        assert_nil @valid_nil.errors.on(:secret)
+        assert_does_not_have_errors_on(@valid_nil,:secret)
       end
       
       should 'not have an error on the secret when blank' do
         assert @valid_blank.valid?
-        assert_nil @valid_blank.errors.on(:secret)
+        assert_does_not_have_errors_on(@valid_blank,:secret)
       end
       
       should 'have an error on the secret when invalid' do
         assert !@invalid.valid?
-        assert @invalid.errors.on(:secret)
+        assert_has_errors_on(@invalid,:secret)
       end
     end
   end
