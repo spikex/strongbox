@@ -114,7 +114,7 @@ module Strongbox
 private
     def get_rsa_key(key,password = '')
       return key if key.is_a?(OpenSSL::PKey::RSA)
-      if key !~ /^-----BEGIN RSA/
+      if key !~ /^-+BEGIN .* KEY-+$/
         key = File.read(key)
       end
       return OpenSSL::PKey::RSA.new(key,password)
