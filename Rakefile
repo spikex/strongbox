@@ -10,7 +10,7 @@ task :default => :test
 
 desc 'Test the strongbox gem.'
 Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib' << 'profile'
+  t.libs << '.'
   t.pattern = 'test/**/*_test.rb'
   t.verbose = true
 end
@@ -32,7 +32,9 @@ spec = Gem::Specification.new do |s|
   s.email = "spike@stuff-things.net"
   s.homepage = "http://stuff-things.net/strongbox"
   s.files = FileList["[A-Z]*", "init.rb", "{lib,rails}/**/*"]
+  s.add_runtime_dependency 'active_record'
   s.add_development_dependency 'thoughtbot-shoulda'
+  s.add_development_dependency 'sqlite3'
 end
 
 desc "Generate a gemspec file for GitHub"
