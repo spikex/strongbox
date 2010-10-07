@@ -23,6 +23,7 @@ module Strongbox
     end
     
     def encrypt plaintext
+      ensure_required_columns
       unless @public_key
         raise StrongboxError.new("#{@instance.class} model does not have public key_file")
       end
@@ -110,6 +111,16 @@ module Strongbox
     def size
       @size
     end
+
+  def ensure_required_columns
+    columns = [@name.to_s]
+    columns += [@symmetric_key, @symmetric_iv] if @symmetric == :always
+    columns.each do |column|
+      unless @instance.class.column_names.include? column
+        raise StrongboxError.new("#{@instance.class} model does not have database column \"#{column}\"")
+      end
+    end
+  end
 
 private
     def get_rsa_key(key,password = '')

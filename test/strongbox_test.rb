@@ -249,7 +249,8 @@ class StrongboxTest < Test::Unit::TestCase
       key_pair = File.join(FIXTURES_DIR,'keypair.pem')
       Dummy.class_eval do
         encrypt_with_public_key :secret, :key_pair => key_pair
-        encrypt_with_public_key :segreto, :key_pair => key_pair
+        encrypt_with_public_key :segreto, :key_pair => key_pair,
+                                          :symmetric => :never
       end
     end
 

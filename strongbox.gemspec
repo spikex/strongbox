@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: strongbox
 version: !ruby/object:Gem::Version 
-  version: 0.3.2
+  version: 0.4.0
 platform: ruby
 authors: 
 - Spike Ilacqua
@@ -9,11 +9,31 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2010-06-08 00:00:00 -06:00
+date: 2010-10-07 00:00:00 -06:00
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
+  name: active_record
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "0"
+    version: 
+- !ruby/object:Gem::Dependency 
   name: thoughtbot-shoulda
+  type: :development
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "0"
+    version: 
+- !ruby/object:Gem::Dependency 
+  name: sqlite3
   type: :development
   version_requirement: 
   version_requirements: !ruby/object:Gem::Requirement 

@@ -34,6 +34,7 @@ def rebuild_model options = {}
     table.binary :secret
     table.binary :secret_key
     table.binary :secret_iv
+    table.binary :segreto
   end
   rebuild_class options
 end
