@@ -32,7 +32,7 @@ spec = Gem::Specification.new do |s|
   s.email = "spike@stuff-things.net"
   s.homepage = "http://stuff-things.net/strongbox"
   s.files = FileList["[A-Z]*", "init.rb", "{lib,rails}/**/*"]
-  s.add_runtime_dependency 'active_record'
+  s.add_runtime_dependency 'activerecord'
   s.add_development_dependency 'thoughtbot-shoulda'
   s.add_development_dependency 'sqlite3'
 end
