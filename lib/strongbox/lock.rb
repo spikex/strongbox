@@ -60,10 +60,10 @@ module Strongbox
     # Given the private key password decrypts the attribute.  Will raise
     # OpenSSL::PKey::RSAError if the password is wrong.
 
-    def decrypt password = nil
+    def decrypt password = nil, ciphertext = nil
       # Given a private key and a nil password OpenSSL::PKey::RSA.new() will
       # *prompt* for a password, we default to an empty string to avoid that.
-      ciphertext = @instance[@name]
+      ciphertext ||= @instance[@name]
       return nil if ciphertext.nil?
       return "" if ciphertext.empty?
 
