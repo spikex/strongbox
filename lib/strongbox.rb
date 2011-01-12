@@ -11,7 +11,7 @@ module Strongbox
   RSA_SSLV23_PADDING	= OpenSSL::PKey::RSA::SSLV23_PADDING
   RSA_NO_PADDING		= OpenSSL::PKey::RSA::NO_PADDING
   RSA_PKCS1_OAEP_PADDING	= OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING
-  
+
   class << self
     # Provides for setting the default options for Strongbox
     def options
@@ -19,10 +19,11 @@ module Strongbox
         :base64 => false,
         :symmetric => :always,
         :padding => RSA_PKCS1_PADDING,
-        :symmetric_cipher => 'aes-256-cbc'
+        :symmetric_cipher => 'aes-256-cbc',
+        :ensure_required_columns => true
       }
     end
-    
+
     def included base #:nodoc:
       base.extend ClassMethods
     end
@@ -30,7 +31,7 @@ module Strongbox
 
   class StrongboxError < StandardError #:nodoc:
   end
-  
+
   module ClassMethods
     # +encrypt_with_public_key+ gives the class it is called on an attribute that
     # when assigned is automatically encrypted using a public key.  This allows the
@@ -49,18 +50,18 @@ module Strongbox
 
 
       lock_options[name] = options.symbolize_keys.reverse_merge Strongbox.options
-          
+
       define_method name do
         lock_for(name)
       end
-      
+
       define_method "#{name}=" do | plaintext |
         lock_for(name).encrypt plaintext
       end
-      
+
     end
   end
-  
+
   module InstanceMethods
     def lock_for name
       @_locks ||= {}

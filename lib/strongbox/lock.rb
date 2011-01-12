@@ -1,17 +1,17 @@
 module Strongbox
-  # The Lock class encrypts and decrypts the protected attribute.  It 
+  # The Lock class encrypts and decrypts the protected attribute.  It
   # automatically encrypts the data when set and decrypts it when the private
   # key password is provided.
   class Lock
-      
+
     def initialize name, instance, options = {}
       @name              = name
       @instance          = instance
-      
+
       @size = nil
-      
+
       options = Strongbox.options.merge(options)
-      
+
       @base64 = options[:base64]
       @public_key = options[:public_key] || options[:key_pair]
       @private_key = options[:private_key] || options[:key_pair]
@@ -20,10 +20,11 @@ module Strongbox
       @symmetric_cipher = options[:symmetric_cipher]
       @symmetric_key = options[:symmetric_key] || "#{name}_key"
       @symmetric_iv = options[:symmetric_iv] || "#{name}_iv"
+      @ensure_required_columns = options[:ensure_required_columns]
     end
-    
+
     def encrypt plaintext
-      ensure_required_columns
+      ensure_required_columns  if @ensure_required_columns
       unless @public_key
         raise StrongboxError.new("#{@instance.class} model does not have public key_file")
       end
@@ -55,22 +56,22 @@ module Strongbox
         @instance[@name] = ciphertext
       end
     end
-    
+
     # Given the private key password decrypts the attribute.  Will raise
     # OpenSSL::PKey::RSAError if the password is wrong.
-    
+
     def decrypt password = nil
       # Given a private key and a nil password OpenSSL::PKey::RSA.new() will
       # *prompt* for a password, we default to an empty string to avoid that.
       ciphertext = @instance[@name]
       return nil if ciphertext.nil?
       return "" if ciphertext.empty?
-      
+
       return "*encrypted*" if password.nil?
       unless @private_key
         raise StrongboxError.new("#{@instance.class} model does not have private key_file")
       end
-      
+
       if ciphertext
         ciphertext = Base64.decode64(ciphertext) if @base64
         private_key = get_rsa_key(@private_key,password)
@@ -94,20 +95,20 @@ module Strongbox
         nil
       end
     end
-    
+
     def to_s
       decrypt
     end
-    
+
     # Needed for validations
     def blank?
       @instance[@name].blank?
     end
-    
+
     def nil?
       @instance[@name].nil?
     end
-    
+
     def size
       @size
     end
