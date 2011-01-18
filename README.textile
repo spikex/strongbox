@@ -1,19 +1,10 @@
 h1. Strongbox
 
-Strongbox provides Public Key Encryption for ActiveRecord. By using a public key
-sensitive information can be encrypted and stored automatically. Once stored a
-password is required to access the information.
+Strongbox provides Public Key Encryption for ActiveRecord. By using a public key sensitive information can be encrypted and stored automatically. Once stored a password is required to access the information.
 
-Because the largest amount of data that can practically be encrypted with a public
-key is 245 byte, by default Strongbox uses a two layer approach. First it encrypts
-the attribute using symmetric encryption with a randomly generated key and
-initialization vector (IV) (which can just be through to as a second key), then it
-encrypts those with the public key.
+Because the largest amount of data that can practically be encrypted with a public key is 245 byte, by default Strongbox uses a two layer approach. First it encrypts the attribute using symmetric encryption with a randomly generated key and initialization vector (IV) (which can just be through to as a second key), then it encrypts those with the public key.
 
-Strongbox stores the encrypted attribute in a database column by the same name, i.e.
-if you tell Strongbox to encrypt "secret" then it will be store in "secret" in the
-database, just as the unencrypted attribute would be. If symmetric encryption is used
-(the default) two additional columns "secret_key" and "secret_iv" are needed as well.
+Strongbox stores the encrypted attribute in a database column by the same name, i.e. if you tell Strongbox to encrypt "secret" then it will be store in "secret" in the database, just as the unencrypted attribute would be. If symmetric encryption is used (the default) two additional columns "secret_key" and "secret_iv" are needed as well.
 
 The attribute is automatically encrypted simply by setting it:
 
@@ -55,8 +46,7 @@ bc. openssl genrsa -des3 -out config/private.pem 2048
 openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
 cat config/private.pem  config/public.pem >> config/keypair.pem
 
-In your views and forms you don't need to do anything special to encrypt data. To
-decrypt call:
+In your views and forms you don't need to do anything special to encrypt data. To decrypt call:
 
 bc. user.secret.decrypt 'password'
 
@@ -68,18 +58,14 @@ bc. config.gem "strongbox"
 
 h2. Usage
 
-_encrypt_with_public_key_ sets up the attribute it's called on for automatic
-encryption.  It's simplest form is:
+_encrypt_with_public_key_ sets up the attribute it's called on for automatic encryption.  It's simplest form is:
 
 bc. class User < ActiveRecord::Base
   encrypt_with_public_key :secret,
     :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
 end
 
-Which will encrypt the attribute "secret". The attribute will be encrypted using
-symmetric encryption with an automatically generated key and IV encrypted using the
-public key. This requires three columns in the database "secret", "secret_key", and
-"secret_iv" (see below).
+Which will encrypt the attribute "secret". The attribute will be encrypted using symmetric encryption with an automatically generated key and IV encrypted using the public key. This requires three columns in the database "secret", "secret_key", and "secret_iv" (see below).
 
 Options to encrypt_with_public_key are:
 
@@ -89,22 +75,17 @@ Options to encrypt_with_public_key are:
 
 :keypair - Path to a file containing both the public and private keys.
 
-:symmetric :always/:never - Encrypt the date using symmetric encryption. The public
-key is used to encrypt an automatically generated key and IV. This allows for large
-amounts of data to be encrypted. The size of data that can be encrypted directly with
-the public is limit to key size (in bytes) - 11. So a 2048 key can encrypt *245 bytes*. Defaults to :always
+:symmetric :always/:never - Encrypt the date using symmetric encryption. The public key is used to encrypt an automatically generated key and IV. This allows for large amounts of data to be encrypted. The size of data that can be encrypted directly with the public is limit to key size (in bytes) - 11. So a 2048 key can encrypt *245 bytes*. Defaults to *:always*.
 
 :symmetric_cipher - Cipher to use for symmetric encryption.  Defaults to *'aes-256-cbc'*.  Other ciphers support by OpenSSL may be used.
 
-:base64 true/false - Use Base64 encoding to convert encrypted data to text. Use when
-binary save data storage is not available.  Defaults to *false*
+:base64 true/false - Use Base64 encoding to convert encrypted data to text. Use when binary save data storage is not available.  Defaults to *false*.
 
-:padding - Method used to pad data encrypted with the public key. Defaults to
-RSA_PKCS1_PADDING. The default should be fine unless you are dealing with legacy
-data.
+:padding - Method used to pad data encrypted with the public key. Defaults to *RSA_PKCS1_PADDING*. The default should be fine unless you are dealing with legacy data.
 
-For example, encrypting a small attribute, providing only the public key for extra
-security, and Base64 encoding the encrypted data:
+:ensure_required_columns - Make sure the required database column(s) exist.  Defaults to *true*, set to false if you want to encrypt/decrypt data stored outside of the database.
+
+For example, encrypting a small attribute, providing only the public key for extra security, and Base64 encoding the encrypted data:
 
 bc. class User < ActiveRecord::Base
   validates_length_of :pin_code, :is => 4
@@ -132,8 +113,7 @@ bc. openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubo
 Enter pass phrase for config/private.pem:
 writing RSA key
 
-If you are going to leave the private key installed it's easiest to create a single
-key pair file:
+If you are going to leave the private key installed it's easiest to create a single key pair file:
 
 bc. cat config/private.pem  config/public.pem >> config/keypair.pem
 
@@ -141,27 +121,18 @@ Or, for added security, store the private key file else where, leaving only the 
 
 h2. Table Creation
 
-In it's default configuration Strongbox requires three columns, one the encrypted
-data, one for the encrypted symmetric key, and one for the encrypted symmetric IV. If
-symmetric encryption is disabled then only the columns for the data being encrypted
-is needed.
+In it's default configuration Strongbox requires three columns, one the encrypted data, one for the encrypted symmetric key, and one for the encrypted symmetric IV. If symmetric encryption is disabled then only the columns for the data being encrypted is needed.
 
-If your underlying database allows, use the *binary* column type. If you must store
-your data in text format be sure to enable Base64 encoding and to use the *text*
-column type. If you use a _string_ column and encrypt anything greater than 186 bytes (245 bytes if you don't enable Base64 encoding) *your data will be lost*.
+If your underlying database allows, use the *binary* column type. If you must store your data in text format be sure to enable Base64 encoding and to use the *text* column type. If you use a _string_ column and encrypt anything greater than 186 bytes (245 bytes if you don't enable Base64 encoding) *your data will be lost*.
 
 
 h2. Security Caveats
 
-If you don't encrypt your data, then an attacker only needs to steal that data to get
-your secrets.
+If you don't encrypt your data, then an attacker only needs to steal that data to get your secrets.
 
-If encrypt your data using symmetric encrypts and a stored key, then the attacker
-needs the data and the key stored on the server.
+If encrypt your data using symmetric encrypts and a stored key, then the attacker needs the data and the key stored on the server.
 
-If you use public key encryption, the attacker needs the data, the private key, and
-the password. This means the attacker has to sniff the password somehow, so that's
-what you need to protect against.
+If you use public key encryption, the attacker needs the data, the private key, and the password. This means the attacker has to sniff the password somehow, so that's what you need to protect against.
 
 h2. Authors
 
@@ -169,6 +140,5 @@ Spike Ilacqua
 
 h2. Thanks
 
-Strongbox's implementation drew inspiration from Thoughtbot's Paperclip gem
-http://www.thoughtbot.com/projects/paperclip
+Strongbox's implementation drew inspiration from Thoughtbot's Paperclip gem http://www.thoughtbot.com/projects/paperclip
 
