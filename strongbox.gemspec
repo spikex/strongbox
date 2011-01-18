@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: strongbox
 version: !ruby/object:Gem::Version 
-  version: 0.4.1
+  version: 0.4.2
 platform: ruby
 authors: 
 - Spike Ilacqua
@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2010-10-09 00:00:00 -06:00
+date: 2011-01-17 00:00:00 -07:00
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
@@ -53,6 +53,7 @@ extra_rdoc_files: []
 files: 
 - LICENSE
 - Rakefile
+- README.html
 - README.textile
 - init.rb
 - lib/strongbox
