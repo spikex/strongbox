@@ -1,3 +1,5 @@
 test/debug.log
 doc
 /strongbox-*.gem
+.bundle
+Gemfile.lock
