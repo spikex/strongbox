@@ -8,7 +8,7 @@ module Strongbox
       @name              = name
       @instance          = instance
 
-      @size = nil
+      @size = 0
 
       options = Strongbox.options.merge(options)
 
