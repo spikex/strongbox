@@ -46,6 +46,12 @@ class StrongboxTest < Test::Unit::TestCase
          end
        end
 
+       should 'impliment to_json' do
+        assert_nothing_raised do
+          @dummy.secret.to_json
+        end
+       end
+
        context 'updating unencrypted fields' do
          setup do
            @dummy.in_the_clear = 'I see you...'

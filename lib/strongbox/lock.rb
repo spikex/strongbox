@@ -100,6 +100,10 @@ module Strongbox
       decrypt
     end
 
+    def to_json(options = nil)
+      to_s
+    end
+
     # Needed for validations
     def blank?
       @instance[@name].blank?
