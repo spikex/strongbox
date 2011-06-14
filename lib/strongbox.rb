@@ -5,7 +5,7 @@ require 'strongbox/lock'
 
 module Strongbox
 
-  VERSION = "0.4.6"
+  VERSION = "0.4.7"
 
   RSA_PKCS1_PADDING	= OpenSSL::PKey::RSA::PKCS1_PADDING
   RSA_SSLV23_PADDING	= OpenSSL::PKey::RSA::SSLV23_PADDING
@@ -26,6 +26,7 @@ module Strongbox
 
     def included base #:nodoc:
       base.extend ClassMethods
+      base.class_attribute :lock_options
     end
   end
 
@@ -45,12 +46,14 @@ module Strongbox
     def encrypt_with_public_key(name, options = {})
       include InstanceMethods
 
-      class_inheritable_reader :lock_options
-      write_inheritable_attribute(:lock_options, {}) if lock_options.nil?
-
+      if respond_to?(:class_attribute)
+        self.lock_options = {} if lock_options.nil?
+      else
+        class_inheritable_reader :lock_options
+        write_inheritable_attribute(:lock_options, {}) if lock_options.nil?
+      end
 
       lock_options[name] = options.symbolize_keys.reverse_merge Strongbox.options
-
       define_method name do
         lock_for(name)
       end

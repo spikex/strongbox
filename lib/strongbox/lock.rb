@@ -117,6 +117,10 @@ module Strongbox
       @size
     end
 
+    def length
+      @size
+    end
+
   def ensure_required_columns
     columns = [@name.to_s]
     columns += [@symmetric_key, @symmetric_iv] if @symmetric == :always

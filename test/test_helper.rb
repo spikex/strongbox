@@ -50,6 +50,7 @@ def rebuild_class options = {}
     include Strongbox
     encrypt_with_public_key :secret, options
   end
+  Dummy.reset_column_information
 end
 
 def assert_has_errors_on(model,attribute)
