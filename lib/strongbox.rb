@@ -5,7 +5,7 @@ require 'strongbox/lock'
 
 module Strongbox
 
-  VERSION = "0.4.7"
+  VERSION = "0.4.8"
 
   RSA_PKCS1_PADDING	= OpenSSL::PKey::RSA::PKCS1_PADDING
   RSA_SSLV23_PADDING	= OpenSSL::PKey::RSA::SSLV23_PADDING
@@ -26,7 +26,9 @@ module Strongbox
 
     def included base #:nodoc:
       base.extend ClassMethods
-      base.class_attribute :lock_options
+      if base.respond_to?(:class_attribute)
+        base.class_attribute :lock_options
+      end
     end
   end
 
