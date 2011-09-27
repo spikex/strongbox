@@ -74,6 +74,42 @@ class StrongboxTest < Test::Unit::TestCase
          end
        end
 
+       context 'after disabling symmetric encryption' do
+         setup do
+           @dummy.save
+           rebuild_class(:key_pair => File.join(FIXTURES_DIR,'keypair.pem'),
+                         :symmetric => :never)
+           @dummy = Dummy.find(@dummy.id)
+         end
+
+         should 'return "*encrypted*" when locked'  do
+           assert_equal '*encrypted*', @dummy.secret.decrypt
+         end
+
+         should 'return secret when unlocked'  do
+           assert_equal 'Shhhh', @dummy.secret.decrypt(@password)
+         end
+
+         context "when edited" do
+           setup do
+             @dummy.secret = 'Newer secret'
+           end
+
+           should 'return "*encrypted*" when locked'  do
+             assert_equal '*encrypted*', @dummy.secret.decrypt
+           end
+
+           should 'return secret when unlocked'  do
+             assert_equal 'Newer secret', @dummy.secret.decrypt(@password)
+           end
+
+           should 'remove symmetric encryption key and IV' do
+             assert_nil @dummy.attributes['secret_key']
+             assert_nil @dummy.attributes['secret_iv']
+           end
+         end
+       end
+
        context 'with symmetric encryption disabled' do
          setup do
            rebuild_class(:key_pair => File.join(FIXTURES_DIR,'keypair.pem'),
@@ -100,6 +136,41 @@ class StrongboxTest < Test::Unit::TestCase
            assert_nil @dummy.attributes['secret_iv']
          end
 
+         context "after enabling symmetric encryption" do
+           setup do
+             @dummy.save
+             rebuild_class(:key_pair => File.join(FIXTURES_DIR,'keypair.pem'),
+                           :symmetric => :always)
+             @dummy = Dummy.find(@dummy.id)
+           end
+
+           should 'return "*encrypted*" when locked'  do
+             assert_equal '*encrypted*', @dummy.secret.decrypt
+           end
+
+           should 'return secret when unlocked'  do
+             assert_equal 'Shhhh', @dummy.secret.decrypt(@password)
+           end
+
+           context "when edited" do
+             setup do
+               @dummy.secret = 'Newer secret'
+             end
+
+             should 'return "*encrypted*" when locked'  do
+               assert_equal '*encrypted*', @dummy.secret.decrypt
+             end
+
+             should 'return secret when unlocked'  do
+               assert_equal 'Newer secret', @dummy.secret.decrypt(@password)
+             end
+
+             should 'generate and store symmetric encryption key and IV' do
+               assert_not_nil @dummy.attributes['secret_key']
+               assert_not_nil @dummy.attributes['secret_iv']
+             end
+           end
+         end
        end
 
        context 'with Base64 encoding enabled' do
@@ -224,7 +295,6 @@ class StrongboxTest < Test::Unit::TestCase
          assert_equal 'I have a secret...', @dummy.secret.decrypt(@password)
          assert_equal 'Ho un segreto...', @dummy.segreto.decrypt(@password)
        end
-
     end
   end
 
