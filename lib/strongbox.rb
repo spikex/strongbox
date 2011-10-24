@@ -45,6 +45,9 @@ module Strongbox
     # database column of the same name as the attibute.  If symmetric encryption is
     # used (the default) additional column are need to store the generated password
     # and IV.
+    #
+    # Last argument should be the options hash
+    # Argument 0..-2 contains columns to be encrypted
     def encrypt_with_public_key(*args)
       include InstanceMethods
       
