@@ -45,9 +45,22 @@ module Strongbox
     # database column of the same name as the attibute.  If symmetric encryption is
     # used (the default) additional column are need to store the generated password
     # and IV.
-    def encrypt_with_public_key(name, options = {})
+    def encrypt_with_public_key(*args)
       include InstanceMethods
-
+      
+      options = args.delete_at(-1) || {}
+      
+      unless options.is_a?(Hash)
+        args.push(options)
+        options = {}
+      end
+      
+      if args.one?
+        name = args.first
+      else
+        return args.each { |name| encrypt_with_public_key(name, options) }
+      end
+      
       if respond_to?(:class_attribute)
         self.lock_options = {} if lock_options.nil?
       else
