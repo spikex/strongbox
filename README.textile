@@ -95,6 +95,22 @@ bc. class User < ActiveRecord::Base
     :public_key => File.join(RAILS_ROOT,'config','public.pem')
 end
 
+Strongbox can encrypt muliple attributes. _encrypt_with_public_key_ accepts a list of attributes, assuming they will use the same options:
+
+bc. class User < ActiveRecord::Base
+  encrypt_with_public_key :secret, :double_secret,
+    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
+end
+
+If you need different options, call _encrypt_with_public_key_ for each attribute:
+
+bc. class User < ActiveRecord::Base
+  encrypt_with_public_key :secret,
+    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
+  encrypt_with_public_key :double_secret,
+    :key_pair => File.join(RAILS_ROOT,'config','another_key.pem')
+end
+
 h2. Key Generation
 
 Generate a key pair:
