@@ -2,6 +2,7 @@ require 'openssl'
 require 'base64'
 
 require 'strongbox/lock'
+require 'set'
 
 module Strongbox
 
@@ -72,14 +73,33 @@ module Strongbox
       end
 
       lock_options[name] = options.symbolize_keys.reverse_merge Strongbox.options
-      define_method name do
-        lock_for(name)
-      end
+      unless lock_options[name][:encryption] == :class
+        define_method name do
+          lock_for(name)
+        end
 
-      define_method "#{name}=" do | plaintext |
-        lock_for(name).encrypt plaintext
+        define_method "#{name}=" do | plaintext |
+          lock_for(name).encrypt plaintext
+        end
+      else
+        @@_encrypted_attributes ||= Set.new
+        @@_encrypted_attributes << name
+        define_method 'encrypt!' do
+          @@_encrypted_attributes.each do |name|
+            lock_for(name).encrypt read_attribute(name.to_s)
+          end
+          @_locked = true
+        end
+        define_method 'decrypt!' do |password|
+          @@_encrypted_attributes.each do |name|
+            write_attribute(name.to_s,lock_for(name).decrypt(password))
+          end
+          @_locked = false
+        end
+        define_method 'locked?' do
+          @_locked
+        end
       end
-
     end
   end
 
