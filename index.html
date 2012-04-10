@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Strongbox by spikex</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Strongbox</h1>
+        <p>Public Key Encryption for ActiveRecord </p>
+        <p class="view"><a href="https://github.com/spikex/strongbox">View the Project on GitHub <small>spikex/strongbox</small></a></p>
+        <ul>
+          <li><a href="https://github.com/spikex/strongbox/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/spikex/strongbox/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/spikex/strongbox">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>Welcome to Strongbox.</h3>
+
+<p>Strongbox is a gem which allows ActiveRecord attributes to be automatically encrypted with a public key. Simply put this means anyone can add or update a record, but only someone with the password can read the stored, encrypted data.</p>
+
+<h3>Quick Start</h3>
+
+<p>Add Strongbox to your Gemfile</p>
+
+<pre><code>gem 'strongbox'
+</code></pre>
+
+<p>(Strongbox also works with Rails 2.x, you can use the <em>config.gem</em> syntax.)</p>
+
+<p>In your model:</p>
+
+<pre><code>class User &lt; ActiveRecord::Base
+  encrypt_with_public_key :secret,
+    :key_pair =&gt; File.join(RAILS_ROOT,'config','keypair.pem')
+end
+</code></pre>
+
+<p>In your migrations:</p>
+
+<pre><code>class AddSecretColumnsToUser &lt; ActiveRecord::Migration
+  def self.up
+    add_column :users, :secret, :binary
+    add_column :users, :secret_key, :binary
+    add_column :users, :secret_iv, :binary
+  end
+  def self.down
+    remove_column :users, :secret
+    remove_column :users, :secret_key
+    remove_column :users, :secret_iv
+  end  
+end
+</code></pre>
+
+<p>Generate a key pair:</p>
+
+<p>(Choose a strong password.)</p>
+
+<pre><code>openssl genrsa -des3 -out config/private.pem 2048
+openssl rsa -in config/private.pem -out config/public.pem -outform PEM -pubout
+cat config/private.pem  config/public.pem &gt;&gt; config/keypair.pem
+</code></pre>
+
+<p>In your views and forms you don't need to do anything special to encrypt data:</p>
+
+<pre><code>user = User.new(:secret =&gt; 'Shhhhhhhhh....')
+user.secret
+=&gt; "*encrypted*"
+</code></pre>
+
+<p>To decrypt call:</p>
+
+<pre><code>user.secret.decrypt 'password'
+=&gt; 'Shhhhhhhhh....'
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/spikex">spikex</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
