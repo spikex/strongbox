@@ -133,7 +133,16 @@ module Strongbox
 
 private
     def get_rsa_key(key,password = '')
+      if key.is_a?(Proc)
+        key = key.call
+      end
+
+      if key.is_a?(Symbol)
+        key = @instance.send(key)
+      end
+
       return key if key.is_a?(OpenSSL::PKey::RSA)
+
       if key !~ /^-+BEGIN .* KEY-+$/
         key = File.read(key)
       end

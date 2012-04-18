@@ -72,3 +72,15 @@ def generate_key_pair(password = nil,size = 2048)
   key_pair << rsa_key.public_key.to_pem
   return key_pair
 end
+
+class Test::Unit::TestCase
+  def self.should_encypted_and_decrypt
+    should 'return "*encrypted*" when locked'  do
+      assert_equal '*encrypted*', @dummy.secret.decrypt
+    end
+
+    should 'return secret when unlocked'  do
+      assert_equal 'Shhhh', @dummy.secret.decrypt(@password)
+    end
+  end
+end

@@ -69,11 +69,11 @@ Which will encrypt the attribute "secret". The attribute will be encrypted using
 
 Options to encrypt_with_public_key are:
 
-:public_key - Path to the public key file.  Overrides :keypair.
+:public_key -  Public key.  Overrides :key_pair. See Key Formats below.
 
-:private_key - Path to the private key file.  Overrides :keypair.
+:private_key - Private key.  Overrides :key_pair.
 
-:keypair - Path to a file containing both the public and private keys.
+:key_pair - Key pair, containing both the public and private keys.
 
 :symmetric :always/:never - Encrypt the date using symmetric encryption. The public key is used to encrypt an automatically generated key and IV. This allows for large amounts of data to be encrypted. The size of data that can be encrypted directly with the public is limit to key size (in bytes) - 11. So a 2048 key can encrypt *245 bytes*. Defaults to *:always*.
 
@@ -111,7 +111,18 @@ bc. class User < ActiveRecord::Base
     :key_pair => File.join(RAILS_ROOT,'config','another_key.pem')
 end
 
+h2 Key Formats
+
+_:public_key_, _:private_key_, and _:key_pair_ can be in one of the following formats:
+
+* A string containing path to a file. This is the default interpretation of a string.
+* A string contanting a key in PEM format, needs to match this the regex /^-+BEGIN .* KEY-+$/
+* A symbol naming a method to call. Can return any of the other valid key formats.
+* A instance of OpenSSL::PKey::RSA. Must be unlocked to be used as the private key.
+
 h2. Key Generation
+
+h3. In the shell
 
 Generate a key pair:
 
@@ -134,6 +145,17 @@ If you are going to leave the private key installed it's easiest to create a sin
 bc. cat config/private.pem  config/public.pem >> config/keypair.pem
 
 Or, for added security, store the private key file else where, leaving only the public key.
+
+h3. In code
+
+bc. require 'openssl'
+rsa_key = OpenSSL::PKey::RSA.new(2048)
+cipher =  OpenSSL::Cipher::Cipher.new('des3')
+private_key = rsa_key.to_pem(cipher,'password')
+public_key = rsa_key.public_key.to_pem
+key_pair = private_key + public_key
+
+_private_key_, _public_key_, and _key_pair_ are strings, store as you see fit.
 
 h2. Table Creation
 
