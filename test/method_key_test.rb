@@ -75,7 +75,7 @@ class MethodKeyTest < Test::Unit::TestCase
     should_encypted_and_decrypt
   end
 
-  context "With dynamic keys, just initialized" do
+  context "With dynamic keys" do
     setup do
       ActiveRecord::Base.connection.create_table :dummies, :force => true do |table|
         table.string :in_the_clear
