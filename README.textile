@@ -62,7 +62,7 @@ _encrypt_with_public_key_ sets up the attribute it's called on for automatic enc
 
 bc. class User < ActiveRecord::Base
   encrypt_with_public_key :secret,
-    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
+    :key_pair => File.join(Rails.root,'config','keypair.pem')
 end
 
 Which will encrypt the attribute "secret". The attribute will be encrypted using symmetric encryption with an automatically generated key and IV encrypted using the public key. This requires three columns in the database "secret", "secret_key", and "secret_iv" (see below).
