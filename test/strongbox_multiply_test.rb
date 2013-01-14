@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'test/test_helper'
 
-class StrongboxMultiPlyTest < Test::Unit::TestCase
+class StrongboxMultiplyTest < Test::Unit::TestCase
   context 'A Class with two secured fields' do
     setup do
       @password = 'boost facile'

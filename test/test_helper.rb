@@ -53,12 +53,12 @@ end
 
 def assert_has_errors_on(model,attribute)
   # Rails 2.X && Rails 3.X
-  !model.errors[attribute].empty?
+  assert !model.errors[attribute].empty?
 end
 
 def assert_does_not_have_errors_on(model,attribute)
   # Rails 2.X                     Rails 3.X
-  model.errors[attribute].nil? || model.errors[attribute].empty?
+  assert model.errors[attribute].nil? || model.errors[attribute].empty?
 end
 
 def generate_key_pair(password = nil,size = 2048)
