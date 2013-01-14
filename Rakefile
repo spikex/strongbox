@@ -3,7 +3,7 @@ Bundler::GemHelper.install_tasks
 
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), 'lib')
 require 'strongbox'
