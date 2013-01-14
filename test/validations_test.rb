@@ -26,7 +26,6 @@ class ValidationsTest < Test::Unit::TestCase
     
     context 'using validates_length_of' do
       setup do
-        rebuild_class(:key_pair => File.join(FIXTURES_DIR,'keypair.pem'))
         Dummy.send(:validates_length_of,
                    :secret,
                    :in => 5..10,
@@ -64,7 +63,6 @@ class ValidationsTest < Test::Unit::TestCase
     if defined?(ActiveModel::Validations)  # Rails 3
       context 'using validates for length' do
         setup do
-          rebuild_class(:key_pair => File.join(FIXTURES_DIR,'keypair.pem'))
           Dummy.send(:validates,
                      :secret,
                      :length => {:minimum => 4, :maximum => 16})
