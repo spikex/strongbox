@@ -46,7 +46,7 @@ class StrongboxTest < Test::Unit::TestCase
          end
        end
 
-       should 'impliment to_json' do
+       should 'implement to_json' do
         assert_nothing_raised do
           @dummy.secret.to_json
         end
@@ -156,11 +156,11 @@ class StrongboxTest < Test::Unit::TestCase
   end
 
   context 'when a private key is not provided' do
-     setup do
+    setup do
       @password = 'boost facile'
       rebuild_class(:public_key => File.join(FIXTURES_DIR,'keypair.pem'))
       @dummy = Dummy.new(:secret => 'Shhhh')
-     end
+    end
 
     should 'raise on decrypt with a password' do
       assert_raises(Strongbox::StrongboxError) do
