@@ -120,6 +120,10 @@ _:public_key_, _:private_key_, and _:key_pair_ can be in one of the following fo
 * A symbol naming a method to call. Can return any of the other valid key formats.
 * A instance of OpenSSL::PKey::RSA. Must be unlocked to be used as the private key.
 
+By default, attributes set to nil will remain encrypted to protect all information about the attribute. However, attributes may be set back to true nil explicitly: 
+
+bc. object[:secret] = nil
+
 h2. Key Generation
 
 h3. In the shell
@@ -179,4 +183,3 @@ Spike Ilacqua
 h2. Thanks
 
 Strongbox's implementation drew inspiration from Thoughtbot's Paperclip gem http://www.thoughtbot.com/projects/paperclip
-
