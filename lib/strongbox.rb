@@ -5,7 +5,7 @@ require 'strongbox/lock'
 
 module Strongbox
 
-  VERSION = "0.6.0"
+  VERSION = "0.7.0"
 
   RSA_PKCS1_PADDING	= OpenSSL::PKey::RSA::PKCS1_PADDING
   RSA_SSLV23_PADDING	= OpenSSL::PKey::RSA::SSLV23_PADDING
