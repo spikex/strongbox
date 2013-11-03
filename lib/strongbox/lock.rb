@@ -34,6 +34,7 @@ module Strongbox
 
     def encrypt!
       encrypt @raw_content
+      @raw_content = nil
     end
 
     def encrypt plaintext

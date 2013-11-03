@@ -112,12 +112,19 @@ class MethodKeyTest < Test::Unit::TestCase
         @dummy.password = @password
       end
 
-      should 'return secret when locked'  do
+      should 'return secret when not yet locked'  do
         assert_equal 'Shhhh', @dummy.secret.decrypt
       end
 
       should 'return secret when unlocked'  do
         assert_equal 'Shhhh', @dummy.secret.decrypt(@password)
+      end
+
+      context 'Then locked' do
+        setup do
+          @dummy.secret.encrypt!
+        end
+        should_encypted_and_decrypt
       end
     end
 
