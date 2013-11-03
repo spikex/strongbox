@@ -74,4 +74,64 @@ class MethodKeyTest < Test::Unit::TestCase
 
     should_encypted_and_decrypt
   end
+
+  context "With dynamic keys" do
+    setup do
+      ActiveRecord::Base.connection.create_table :dummies, :force => true do |table|
+        table.string :in_the_clear
+        table.binary :secret
+        table.binary :secret_key
+        table.binary :secret_iv
+        table.binary :segreto
+
+        table.string :key_pair
+      end
+      rebuild_class :public_key => :key_pair,
+                    :private_key => :key_pair,
+                    :deferred_encryption => true
+
+      Dummy.class_eval do
+        attr_accessor :password
+
+        def key_pair
+          unless self['key_pair']
+            raise if self.password.blank?
+            self['key_pair'] = generate_key_pair(self.password)
+          end
+          self['key_pair']
+        end
+      end
+
+      @password = 'letmein'
+    end
+
+    context 'When just initialized' do
+      setup do
+        @dummy = Dummy.new
+        @dummy.secret = 'Shhhh'
+        @dummy.password = @password
+      end
+
+      should 'return secret when locked'  do
+        assert_equal 'Shhhh', @dummy.secret.decrypt
+      end
+
+      should 'return secret when unlocked'  do
+        assert_equal 'Shhhh', @dummy.secret.decrypt(@password)
+      end
+    end
+
+    context 'After saving the model, and then loading it from the database' do
+      setup do
+        Dummy.create!(:secret => 'Shhhh', :password => @password)
+        @dummy = Dummy.first
+      end
+
+      should_encypted_and_decrypt
+    end
+
+    teardown do
+      rebuild_model
+    end
+  end
 end

@@ -21,6 +21,19 @@ module Strongbox
       @symmetric_key = options[:symmetric_key] || "#{name}_key"
       @symmetric_iv = options[:symmetric_iv] || "#{name}_iv"
       @ensure_required_columns = options[:ensure_required_columns]
+      @deferred_encryption = options[:deferred_encryption]
+    end
+
+    def content plaintext
+      if @deferred_encryption
+        @raw_content = plaintext
+      else
+        encrypt plaintext
+      end
+    end
+
+    def encrypt!
+      encrypt @raw_content
     end
 
     def encrypt plaintext
@@ -61,11 +74,15 @@ module Strongbox
     # OpenSSL::PKey::RSAError if the password is wrong.
 
     def decrypt password = nil, ciphertext = nil
+      return @raw_content if @deferred_encryption && @raw_content
+
       # Given a private key and a nil password OpenSSL::PKey::RSA.new() will
       # *prompt* for a password, we default to an empty string to avoid that.
       ciphertext ||= @instance[@name]
-      return nil if ciphertext.nil?
-      return "" if ciphertext.empty?
+      unless @deferred_encryption
+        return nil if ciphertext.nil?
+        return "" if ciphertext.empty?
+      end
 
       return "*encrypted*" if password.nil?
       unless @private_key
@@ -97,7 +114,7 @@ module Strongbox
     end
 
     def to_s
-      decrypt
+      @raw_content || decrypt
     end
 
     def to_json(options = nil)

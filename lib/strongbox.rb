@@ -20,7 +20,8 @@ module Strongbox
         :symmetric => :always,
         :padding => RSA_PKCS1_PADDING,
         :symmetric_cipher => 'aes-256-cbc',
-        :ensure_required_columns => true
+        :ensure_required_columns => true,
+        :deferred_encryption => false
       }
     end
 
@@ -77,9 +78,14 @@ module Strongbox
       end
 
       define_method "#{name}=" do | plaintext |
-        lock_for(name).encrypt plaintext
+        lock_for(name).content plaintext
       end
 
+      if lock_options[name][:deferred_encryption]
+        before_save do
+          lock_for(name).encrypt!
+        end
+      end
     end
   end
 
