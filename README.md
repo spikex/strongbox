@@ -126,6 +126,8 @@ Options to `encrypt_with_public_key` are:
 
 * `:ensure_required_columns` - Make sure the required database column(s) exist.  Defaults to `true`, set to `false` if you want to encrypt/decrypt data stored outside of the database.
 
+* `:deferred_encryption` - Defer the encryption to happen before saving the object, instead of on the assignment of the encrypted attribute. Solves issues when using [dynamic keys](http://stuff-things.net/2012/04/18/dynamic-keys-for-strongbox/). Defaults to `false`.
+
 For example, encrypting a small attribute, providing only the public
 key for extra security, and Base64 encoding the encrypted data:
 
