@@ -1,3 +1,4 @@
+require 'yaml'
 require 'test/test_helper'
 
 class MethodKeyTest < Test::Unit::TestCase

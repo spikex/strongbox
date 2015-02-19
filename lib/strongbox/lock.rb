@@ -25,6 +25,7 @@ module Strongbox
     end
 
     def content plaintext
+      @size = plaintext.size unless plaintext.nil? # For validations
       if @deferred_encryption
         @raw_content = plaintext
       else
@@ -43,7 +44,6 @@ module Strongbox
         raise StrongboxError.new("#{@instance.class} model does not have public key_file")
       end
       if !plaintext.blank?
-        @size = plaintext.size # For validations
         # Using a blank password in OpenSSL::PKey::RSA.new prevents reading
         # the private key if the file is a key pair
         public_key = get_rsa_key(@public_key,"")
@@ -124,11 +124,11 @@ module Strongbox
 
     # Needed for validations
     def blank?
-      @instance[@name].blank?
+      @raw_content.blank? and @instance[@name].blank?
     end
 
     def nil?
-      @instance[@name].nil?
+      @raw_content.nil? and @instance[@name].nil?
     end
 
     def size
