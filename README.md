@@ -33,8 +33,7 @@ plain_text = user.secret.decrypt 'letmein'
 
 ## Environment
 
-Strongbox is tested against Rails 2.3 and 3.x using Ruby 1.8.7, 1.9.2,
-and 1.9.3.
+Strongbox is tested against Rails 2.3, 3.x, and 4.x using Ruby 1.8.7, 1.9.2, 1.9.3, and 2.1.2.
 
 ## Installation
 
