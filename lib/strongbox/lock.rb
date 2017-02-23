@@ -65,6 +65,8 @@ module Strongbox
           @instance[@symmetric_iv] = encrypted_iv
         else
           ciphertext = public_key.public_encrypt(plaintext,@padding)
+          @instance[@symmetric_key] = nil if @instance[@symmetric_key]
+          @instance[@symmetric_iv] = nil if @instance[@symmetric_iv]
         end
         ciphertext =  Base64.encode64(ciphertext) if @base64
         @instance[@name] = ciphertext
@@ -93,7 +95,7 @@ module Strongbox
       if ciphertext
         ciphertext = Base64.decode64(ciphertext) if @base64
         private_key = get_rsa_key(@private_key,password)
-        if @symmetric == :always
+        if symmetric_available?
           random_key = @instance[@symmetric_key]
           random_iv = @instance[@symmetric_iv]
           if @base64
@@ -150,6 +152,11 @@ module Strongbox
   end
 
 private
+
+    def symmetric_available?
+      @instance[@symmetric_key] && @instance[@symmetric_iv]
+    end
+
     def get_rsa_key(key,password = '')
       if key.is_a?(Proc)
         key = key.call
