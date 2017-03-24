@@ -2,11 +2,9 @@ require 'openssl'
 require 'base64'
 
 require 'strongbox/lock'
+require 'strongbox/version'
 
 module Strongbox
-
-  VERSION = "0.7.2"
-
   RSA_PKCS1_PADDING	= OpenSSL::PKey::RSA::PKCS1_PADDING
   RSA_SSLV23_PADDING	= OpenSSL::PKey::RSA::SSLV23_PADDING
   RSA_NO_PADDING		= OpenSSL::PKey::RSA::NO_PADDING
