@@ -46,9 +46,9 @@ module Strongbox
       if !plaintext.blank?
         # Using a blank password in OpenSSL::PKey::RSA.new prevents reading
         # the private key if the file is a key pair
-        public_key = get_rsa_key(@public_key,"")
+        public_key = get_rsa_key(@public_key)
         if @symmetric == :always
-          cipher = OpenSSL::Cipher::Cipher.new(@symmetric_cipher)
+          cipher = OpenSSL::Cipher.new(@symmetric_cipher)
           cipher.encrypt
           cipher.key = random_key = cipher.random_key
           cipher.iv = random_iv = cipher.random_iv
@@ -100,7 +100,7 @@ module Strongbox
             random_key = Base64.decode64(random_key)
             random_iv = Base64.decode64(random_iv)
           end
-          cipher = OpenSSL::Cipher::Cipher.new(@symmetric_cipher)
+          cipher = OpenSSL::Cipher.new(@symmetric_cipher)
           cipher.decrypt
           cipher.key = private_key.private_decrypt(random_key,@padding)
           cipher.iv = private_key.private_decrypt(random_iv,@padding)
@@ -150,7 +150,7 @@ module Strongbox
   end
 
 private
-    def get_rsa_key(key,password = '')
+    def get_rsa_key(key, password = 'PLACEHOLDER')
       if key.is_a?(Proc)
         key = key.call
       end

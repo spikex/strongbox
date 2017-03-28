@@ -1,6 +1,6 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
-require 'strongbox'
+require 'strongbox/version'
 
 Gem::Specification.new do |s|
   s.name = "strongbox"
