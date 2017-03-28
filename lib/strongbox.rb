@@ -95,6 +95,5 @@ module Strongbox
   end
 end
 
-if Object.const_defined?("ActiveRecord")
-  ActiveRecord::Base.send(:include, Strongbox)
-end
+# Load rails support
+require 'strongbox/railtie' if defined?(Rails)
