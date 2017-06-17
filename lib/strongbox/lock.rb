@@ -122,6 +122,10 @@ module Strongbox
       to_s
     end
 
+    def as_json(options = nil)
+      to_s
+    end
+
     # Needed for validations
     def blank?
       @raw_content.blank? and @instance[@name].blank?
