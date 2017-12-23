@@ -59,8 +59,11 @@ class MissingAttribuesTest < Test::Unit::TestCase
     end
 
     should 'not raise' do
-      assert_nothing_raised do
+      assert_nothing_raised Strongbox::StrongboxError do
         Dummy.class_eval do
+          def []=(_attr_name, _value)
+          end
+
           encrypt_with_public_key(:secret,
                                   :key_pair => File.join(FIXTURES_DIR,'keypair.pem'),
                                   :ensure_required_columns => false)
