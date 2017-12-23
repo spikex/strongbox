@@ -124,11 +124,11 @@ module Strongbox
 
     # Needed for validations
     def blank?
-      @raw_content.blank? and @instance[@name].blank?
+      @raw_content.blank? && @instance[@name].blank?
     end
 
     def nil?
-      @raw_content.nil? and @instance[@name].nil?
+      @raw_content.nil? && @instance[@name].nil?
     end
 
     def size
