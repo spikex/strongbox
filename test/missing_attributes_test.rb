@@ -62,6 +62,7 @@ class MissingAttribuesTest < Test::Unit::TestCase
       assert_nothing_raised Strongbox::StrongboxError do
         Dummy.class_eval do
           def []=(_attr_name, _value)
+            # Stub to prevent ActiveModel::MissingAttributeError error
           end
 
           encrypt_with_public_key(:secret,
