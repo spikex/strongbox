@@ -39,7 +39,7 @@ class MethodKeyTest < Test::Unit::TestCase
     setup do
       @password = 'boost facile'
       rsa_key = OpenSSL::PKey::RSA.new(2048)
-      cipher =  OpenSSL::Cipher::Cipher.new('des3')
+      cipher =  Strongbox::Cipher.new('des3')
       rebuild_model :public_key => :public_key_attribute,
                     :private_key => :private_key_attribute
       Dummy.class_eval do

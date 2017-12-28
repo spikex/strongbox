@@ -48,7 +48,7 @@ module Strongbox
         # the private key if the file is a key pair
         public_key = get_rsa_key(@public_key,"")
         if @symmetric == :always
-          cipher = OpenSSL::Cipher::Cipher.new(@symmetric_cipher)
+          cipher = Cipher.new(@symmetric_cipher)
           cipher.encrypt
           cipher.key = random_key = cipher.random_key
           cipher.iv = random_iv = cipher.random_iv
@@ -100,7 +100,7 @@ module Strongbox
             random_key = Base64.decode64(random_key)
             random_iv = Base64.decode64(random_iv)
           end
-          cipher = OpenSSL::Cipher::Cipher.new(@symmetric_cipher)
+          cipher = Cipher.new(@symmetric_cipher)
           cipher.decrypt
           cipher.key = private_key.private_decrypt(random_key,@padding)
           cipher.iv = private_key.private_decrypt(random_iv,@padding)
@@ -124,11 +124,11 @@ module Strongbox
 
     # Needed for validations
     def blank?
-      @raw_content.blank? and @instance[@name].blank?
+      @raw_content.blank? && @instance[@name].blank?
     end
 
     def nil?
-      @raw_content.nil? and @instance[@name].nil?
+      @raw_content.nil? && @instance[@name].nil?
     end
 
     def size

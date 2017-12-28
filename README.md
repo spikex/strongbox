@@ -212,7 +212,7 @@ only the public key.
 ```ruby
 require 'openssl'
 rsa_key = OpenSSL::PKey::RSA.new(2048)
-cipher =  OpenSSL::Cipher::Cipher.new('des3')
+cipher =  OpenSSL::Cipher.new('des3')
 private_key = rsa_key.to_pem(cipher,'password')
 public_key = rsa_key.public_key.to_pem
 key_pair = private_key + public_key

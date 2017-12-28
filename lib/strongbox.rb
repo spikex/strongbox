@@ -1,6 +1,7 @@
 require 'openssl'
 require 'base64'
 
+require 'strongbox/cipher'
 require 'strongbox/lock'
 
 module Strongbox

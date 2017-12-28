@@ -1,6 +1,0 @@
-source "http://rubygems.org"
-
-gem "rails", "~> 3.1.10"
-gem "strongbox", :path=>"../"
-
-gemspec :path=>"../"
